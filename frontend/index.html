@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Text to SQL 🚀</title>
+
+<style>
+
+body{
+    font-family: Arial;
+    background:#0f172a;
+    color:white;
+    padding:40px;
+}
+
+h1{
+    text-align:center;
+    color:#38bdf8;
+}
+
+.box{
+    max-width:900px;
+    margin:auto;
+    background:#020617;
+    padding:25px;
+    border-radius:10px;
+    box-shadow:0 0 25px black;
+}
+
+label{
+    margin-top:15px;
+    display:block;
+    font-weight:bold;
+}
+
+input,textarea{
+    width:100%;
+    padding:12px;
+    margin-top:5px;
+    border-radius:6px;
+    background:#020617;
+    color:white;
+    border:1px solid #38bdf8;
+}
+
+button{
+    margin-top:15px;
+    padding:12px 25px;
+    background:#38bdf8;
+    border:none;
+    font-weight:bold;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#0ea5e9;
+}
+
+pre{
+    background:black;
+    padding:15px;
+    border-radius:6px;
+    color:#22c55e;
+}
+
+.result{
+    color:#facc15;
+}
+
+.footer{
+    text-align:center;
+    margin-top:25px;
+    opacity:0.7;
+}
+
+hr{
+    margin:30px 0;
+    border:1px solid #1e293b;
+}
+
+</style>
+</head>
+
+
+<body>
+
+<h1>Text → SQL System 🚀</h1>
+
+<div class="box">
+
+<!-- ================= CREATE DB ================= -->
+
+<h2>1️⃣ Create Database</h2>
+
+<label>Database Name</label>
+<input id="c_db" placeholder="school">
+
+<label>Table Name</label>
+<input id="c_table" placeholder="students">
+
+<label>Columns (comma separated)</label>
+<textarea id="c_cols" rows="3"
+placeholder="id INTEGER, name TEXT, marks INTEGER, class TEXT"></textarea>
+
+<button onclick="createDB()">Create Database</button>
+
+<pre id="create_result"></pre>
+
+
+<hr>
+
+
+<!-- ================= ASK QUERY ================= -->
+
+<h2>2️⃣ Ask Question</h2>
+
+<label>Database Name</label>
+<input id="db" placeholder="school">
+
+<label>Your Query (English)</label>
+<textarea id="question" rows="4"
+placeholder="show students marks above 80"></textarea>
+
+<button onclick="ask()">Run Query</button>
+
+
+<label>Generated SQL</label>
+<pre id="sql"></pre>
+
+
+<label>Result</label>
+<pre id="result" class="result"></pre>
+
+</div>
+
+
+<div class="footer">
+Made by MANYA 💻🔥
+</div>
+
+
+
+<script>
+
+const API = "http://127.0.0.1:8000";
+
+
+/* ================= CREATE DB ================= */
+
+async function createDB(){
+
+    const db = document.getElementById("c_db").value.trim();
+    const table = document.getElementById("c_table").value.trim();
+    const cols = document.getElementById("c_cols").value.trim();
+
+    if(!db || !table || !cols){
+        alert("Fill all Create DB fields");
+        return;
+    }
+
+    const colArr = cols.split(",").map(c=>c.trim());
+
+    const body = {
+        name: db,
+        tables: {
+            [table]: colArr
+        }
+    };
+
+    const res = await fetch(API+"/create-db",{
+        method:"POST",
+        headers:{ "Content-Type":"application/json"},
+        body: JSON.stringify(body)
+    });
+
+    const data = await res.json();
+
+    document.getElementById("create_result").innerText =
+        JSON.stringify(data,null,2);
+}
+
+
+/* ================= ASK ================= */
+
+async function ask(){
+
+    const db = document.getElementById("db").value.trim();
+    const q = document.getElementById("question").value.trim();
+
+    if(!db || !q){
+        alert("Enter DB and Query");
+        return;
+    }
+
+    const res = await fetch(API+"/ask",{
+        method:"POST",
+        headers:{ "Content-Type":"application/json"},
+        body: JSON.stringify({
+            db_name:db,
+            question:q
+        })
+    });
+
+    const data = await res.json();
+
+    document.getElementById("sql").innerText =
+        data.sql || "No SQL";
+
+    document.getElementById("result").innerText =
+        JSON.stringify(data.data,null,2);
+}
+
+</script>
+
+</body>
+</html>

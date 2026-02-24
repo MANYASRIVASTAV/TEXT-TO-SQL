@@ -1,0 +1,4 @@
+__pycache__/
+db/user_dbs/
+*.db
+.env

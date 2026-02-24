@@ -1,0 +1,40 @@
+{
+  "school": {
+    "students": [
+      "id INTEGER",
+      "name TEXT",
+      "marks INTEGER",
+      "class TEXT"
+    ]
+  },
+  "company": {
+    "office": [
+      "id INTEGER PRIMARY KEY",
+      "name TEXT",
+      "salary INTEGER",
+      "dept TEXT"
+    ]
+  },
+  "class": {
+    "students": [
+      "id INTEGER",
+      "name text"
+    ]
+  },
+  " school": {
+    " students ": [
+      "id INTEGER",
+      "name TEXT",
+      "marks INTEGER",
+      "class TEXT"
+    ]
+  },
+  "MICROSOFT": {
+    "employees": [
+      "id INTEGER PRIMARY KEY",
+      "name TEXT",
+      "salary INTEGER",
+      "dept TEXT"
+    ]
+  }
+}
